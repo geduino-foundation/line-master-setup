@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,12 +15,18 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    serialclient.cpp
+    serialclient.cpp \
+    qcustomplot.cpp \
+    telemetrydialog.cpp
 
 HEADERS  += mainwindow.h \
-    serialclient.h
+    serialclient.h \
+    qcustomplot.h \
+    telemetrydialog.h \
+    types.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    telemetrydialog.ui
 
 unix:!macx: LIBS += -lserial
 

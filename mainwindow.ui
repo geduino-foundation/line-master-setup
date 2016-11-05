@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>341</width>
-    <height>615</height>
+    <width>340</width>
+    <height>611</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,12 +30,60 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>70</y>
+      <y>10</y>
       <width>321</width>
-      <height>534</height>
+      <height>591</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="images.qrc">:/logo/geduino-foundation-logo-50x50.png</pixmap>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="battery_label">
+           <property name="text">
+            <string>Bettery level</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLCDNumber" name="battery_lcd">
+           <property name="smallDecimalPoint">
+            <bool>false</bool>
+           </property>
+           <property name="value" stdset="0">
+            <double>0.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
      <item>
       <widget class="QLabel" name="pid_section_label">
        <property name="font">
@@ -154,7 +202,7 @@
        <item>
         <widget class="QSpinBox" name="motors_max_speed_spin">
          <property name="maximum">
-          <number>255</number>
+          <number>128</number>
          </property>
         </widget>
        </item>
@@ -223,6 +271,29 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="telemetry_label">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Telemetry</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::PlainText</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="telemetry_enabled_check">
+       <property name="text">
+        <string>Enabled</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="output_label">
@@ -327,6 +398,20 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="download_telemetry_button">
+           <property name="text">
+            <string>Download telemetry</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="load_file_button">
            <property name="text">
             <string>Load file...</string>
@@ -345,51 +430,6 @@
       </layout>
      </item>
     </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>10</y>
-      <width>135</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QLabel" name="battery_label">
-       <property name="text">
-        <string>Bettery level</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLCDNumber" name="battery_lcd">
-       <property name="smallDecimalPoint">
-        <bool>false</bool>
-       </property>
-       <property name="value" stdset="0">
-        <double>0.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>51</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="images.qrc">:/logo/geduino-foundation-logo-50x50.png</pixmap>
-    </property>
    </widget>
   </widget>
   <action name="actionLoad_setup">

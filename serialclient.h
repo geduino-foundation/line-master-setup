@@ -2,6 +2,9 @@
 #define SERIALCLIENT_H
 
 #include <serial/serial.h>
+#include <stdlib.h>
+
+#include "types.h"
 
 #define PROTOCOL_VERSION        0x00
 
@@ -11,18 +14,12 @@
 #define SAVE_TO_EEPROM          0x03
 #define DOWNLOAD                0x04
 #define UPLOAD                  0x05
+#define DOWNLOAD_TELEMETRY      0x06
 
 #define BAUDRATE                9600
 #define TIMEOUT                 2500
 
-struct Setup {
-    unsigned short pid_proportional;
-    unsigned short pid_integrative;
-    unsigned short pid_derivative;
-    unsigned short motors_max_speed;
-    unsigned short ir_in_line_threshold;
-    unsigned short ir_noise_threshold;
-};
+#define TELEMETRY_BUFFER_SIZE   200
 
 class SerialClient {
 
@@ -58,6 +55,8 @@ public:
 
     void downloadSetup(Setup * setup);
 
+    void downloadTelemetry(TelemetryData * data);
+
 private:
 
     serial::Serial serial;
@@ -69,6 +68,10 @@ private:
     void readChar(unsigned char * data);
 
     void readShort(unsigned short * data);
+
+    void readShort(short * data);
+
+    void readInt(unsigned int * data);
 
 };
 

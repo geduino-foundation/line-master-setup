@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "telemetrydialog.h"
+
 MainWindow::MainWindow(QWidget * parent) :
     QMainWindow(parent), ui(new Ui::MainWindow) {
 
@@ -34,6 +36,7 @@ void MainWindow::update() {
     ui->motors_max_speed_spin->setValue(setup.motors_max_speed);
     ui->ir_in_line_threshold_spin->setValue(setup.ir_in_line_threshold);
     ui->ir_noise_threshold_spin->setValue(setup.ir_noise_threshold);
+    ui->telemetry_enabled_check->setChecked(setup.telemetry_enabled);
 
 }
 
@@ -211,6 +214,44 @@ void MainWindow::save() {
 
 }
 
+void MainWindow::dowloadTelemetry() {
+
+    try {
+
+        // Log
+        log("Checking protocol version");
+
+        // Check protocol version
+        serialClient.checkProtocolVersion();
+
+        // Log
+        log("Downloading telemetry");
+
+        TelemetryData data[TELEMETRY_BUFFER_SIZE];
+
+        // Download telemetry
+        serialClient.downloadTelemetry(data);
+
+        // Create telemetry dialog
+        TelemetryDialog * telemetryDialog = new TelemetryDialog(this);
+        telemetryDialog->show();
+
+        // Plot data
+        telemetryDialog->plot(data, TELEMETRY_BUFFER_SIZE);
+
+        // Log
+        log("Done");
+
+    } catch (std::exception & ex) {
+
+        // Log
+        log("Error:");
+        log(ex.what());
+
+    }
+
+}
+
 void MainWindow::loadFile() {
 
     // Request file name
@@ -224,6 +265,7 @@ void MainWindow::loadFile() {
     setup.motors_max_speed = settingsSetup.value(MOTORS_MAX_SPEED_KEY, 0).toInt();
     setup.ir_noise_threshold = settingsSetup.value(IR_NOISE_THRESHOLD_KEY, 0).toInt();
     setup.ir_in_line_threshold = settingsSetup.value(IR_IN_LINE_THRESHOLD_KEY, 0).toInt();
+    setup.telemetry_enabled = settingsSetup.value(TELEMETRY_ENABLED_KEY, 0).toInt();
 
     // Update
     update();
@@ -246,6 +288,7 @@ void MainWindow::saveFile() {
     settingsSetup.setValue(MOTORS_MAX_SPEED_KEY, setup.motors_max_speed);
     settingsSetup.setValue(IR_NOISE_THRESHOLD_KEY, setup.ir_noise_threshold);
     settingsSetup.setValue(IR_IN_LINE_THRESHOLD_KEY, setup.ir_in_line_threshold);
+    settingsSetup.setValue(TELEMETRY_ENABLED_KEY, setup.telemetry_enabled);
 
     // Log
     log("Setup saved");
@@ -301,6 +344,13 @@ void MainWindow::on_ir_in_line_threshold_spin_valueChanged(int value) {
 
 }
 
+void MainWindow::on_telemetry_enabled_check_stateChanged(int value) {
+
+    // Set value
+    setup.telemetry_enabled = value;
+
+}
+
 void MainWindow::on_serial_port_refresh_clicked() {
 
     // Update serial ports
@@ -347,5 +397,12 @@ void MainWindow::on_save_button_clicked() {
 
     // Save
     save();
+
+}
+
+void MainWindow::on_download_telemetry_button_clicked() {
+
+    // Download telemetry
+    dowloadTelemetry();
 
 }

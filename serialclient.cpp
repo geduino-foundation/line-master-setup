@@ -1,5 +1,10 @@
 #include "serialclient.h"
 
+#include <ostream>
+#include <istream>
+#include <iostream>
+#include <math.h>
+
 void SerialClient::connect(const std::string port) {
 
     if (!serial.isOpen()) {
@@ -82,6 +87,7 @@ void SerialClient::uploadSetup(Setup * setup) {
     writeShort(setup->motors_max_speed);
     writeShort(setup->ir_in_line_threshold);
     writeShort(setup->ir_noise_threshold);
+    writeShort(setup->telemetry_enabled);
 
 }
 
@@ -97,6 +103,22 @@ void SerialClient::downloadSetup(Setup * setup) {
     readShort(& setup->motors_max_speed);
     readShort(& setup->ir_in_line_threshold);
     readShort(& setup->ir_noise_threshold);
+    readShort(& setup->telemetry_enabled);
+
+}
+
+void SerialClient::downloadTelemetry(TelemetryData * data) {
+
+    // Send command
+    writeChar(DOWNLOAD_TELEMETRY);
+
+    for (unsigned int index = 0; index < TELEMETRY_BUFFER_SIZE; index++) {
+
+        // Read data
+        readInt(& data[index].time);
+        readShort(& data[index].error);
+
+    }
 
 }
 
@@ -149,6 +171,80 @@ void SerialClient::readShort(unsigned short * data) {
             * data = buffer[0];
             * data <<= 8;
             * data += buffer[1];
+
+        }
+
+    } else {
+
+        // Throw exception
+        throw SerialTimeout();
+
+    }
+
+}
+
+void SerialClient::readShort(short * data) {
+
+    // Wait for data available
+    bool available = serial.waitReadable();
+
+    if (available) {
+
+        uint8_t buffer[2];
+
+        // Read data
+        size_t count = serial.read(buffer, 2);
+
+        if (count != 2) {
+
+            // Throw exception
+            throw ReadUnexpectedByteCount();
+
+        } else {
+
+            // Copy buffer into data
+            * data = buffer[0];
+            * data <<= 8;
+            * data += buffer[1];
+
+        }
+
+    } else {
+
+        // Throw exception
+        throw SerialTimeout();
+
+    }
+
+}
+
+void SerialClient::readInt(unsigned int * data) {
+
+    // Wait for data available
+    bool available = serial.waitReadable();
+
+    if (available) {
+
+        uint8_t buffer[4];
+
+        // Read data
+        size_t count = serial.read(buffer, 4);
+
+        if (count != 4) {
+
+            // Throw exception
+            throw ReadUnexpectedByteCount();
+
+        } else {
+
+            // Copy buffer into data
+            * data = buffer[0];
+            * data <<= 8;
+            * data += buffer[1];
+            * data <<= 8;
+            * data += buffer[2];
+            * data <<= 8;
+            * data += buffer[3];
 
         }
 

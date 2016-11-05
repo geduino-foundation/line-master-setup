@@ -14,6 +14,7 @@
 #define MOTORS_MAX_SPEED_KEY                                    "motors.max.speed"
 #define IR_NOISE_THRESHOLD_KEY                                  "ir.noise.threshold"
 #define IR_IN_LINE_THRESHOLD_KEY                                "ir.in.line.threshold"
+#define TELEMETRY_ENABLED_KEY                                   "telemetry.enabled"
 
 namespace Ui {
     class MainWindow;
@@ -43,6 +44,8 @@ private slots:
 
     void on_ir_in_line_threshold_spin_valueChanged(int value);
 
+    void on_telemetry_enabled_check_stateChanged(int value);
+
     void on_serial_port_refresh_clicked();
 
     void on_load_file_button_clicked();
@@ -56,6 +59,8 @@ private slots:
     void on_upload_button_clicked();
 
     void on_save_button_clicked();
+
+    void on_download_telemetry_button_clicked();
 
 private:
 
@@ -76,6 +81,8 @@ private:
     void upload();
 
     void save();
+
+    void dowloadTelemetry();
 
     void loadFile();
 
