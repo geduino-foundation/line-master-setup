@@ -1,11 +1,6 @@
 #include "telemetrydialog.h"
 #include "ui_telemetrydialog.h"
 
-#include <ostream>
-#include <istream>
-#include <iostream>
-#include <math.h>
-
 TelemetryDialog::TelemetryDialog(QWidget * parent) :
     QDialog(parent), ui(new Ui::TelemetryDialog) {
 
