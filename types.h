@@ -1,7 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-struct Setup {
+struct __attribute__((packed)) Setup {
     unsigned short pid_proportional;
     unsigned short pid_integrative;
     unsigned short pid_derivative;
@@ -11,7 +11,7 @@ struct Setup {
     unsigned short telemetry_enabled;
 };
 
-struct TelemetryData {
+struct __attribute__((packed)) TelemetryData {
     unsigned int time;
     short error;
 };

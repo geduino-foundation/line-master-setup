@@ -140,7 +140,7 @@ void MainWindow::synch() {
         // Download setup
         serialClient.downloadSetup(& setup);
 
-        // Update e=setup
+        // Update setup
         update();
 
         // Log

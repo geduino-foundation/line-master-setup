@@ -61,17 +61,13 @@ private:
 
     serial::Serial serial;
 
-    void writeChar(const unsigned char data);
+    void writeCmd(const unsigned char cmd, const void * request, size_t requestSize, void * response, size_t responseSize);
 
-    void writeShort(const unsigned short data);
+    void writeData(const void * data, size_t size);
 
-    void readChar(unsigned char * data);
+    void readData(void * data, size_t size);
 
-    void readShort(unsigned short * data);
-
-    void readShort(short * data);
-
-    void readInt(unsigned int * data);
+    void checkEOS();
 
 };
 
@@ -79,7 +75,7 @@ class NotYetConnected : public std::exception {
 
 public:
 
-    virtual const char* what() const throw() {
+    virtual const char * what() const throw() {
         return "Not yet connected";
     }
 
@@ -89,7 +85,7 @@ class SerialTimeout : public std::exception {
 
 public:
 
-    virtual const char* what() const throw() {
+    virtual const char * what() const throw() {
         return "Serial timeout expired";
     }
 
@@ -99,7 +95,7 @@ class ReadUnexpectedByteCount : public std::exception {
 
 public:
 
-    virtual const char* what() const throw() {
+    virtual const char * what() const throw() {
         return "Read unexpected byte count";
     }
 
@@ -109,7 +105,7 @@ class WriteUnexpectedByteCount : public std::exception {
 
 public:
 
-    virtual const char* what() const throw() {
+    virtual const char * what() const throw() {
         return "Write unexpected byte count";
     }
 
@@ -119,7 +115,7 @@ class ProtocolVersionException : public std::exception {
 
 public:
 
-    virtual const char* what() const throw() {
+    virtual const char * what() const throw() {
         return "Protocol version missmatch";
     }
 

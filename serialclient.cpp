@@ -1,10 +1,5 @@
 #include "serialclient.h"
 
-#include <ostream>
-#include <istream>
-#include <iostream>
-#include <math.h>
-
 void SerialClient::connect(const std::string port) {
 
     if (!serial.isOpen()) {
@@ -38,12 +33,10 @@ bool SerialClient::isConnected() {
 
 void SerialClient::checkProtocolVersion() {
 
-    // Send command
-    writeChar(GET_PROTOCOL_VERSION);
-
-    // Read response
     unsigned char protocolVersion;
-    readChar(& protocolVersion);
+
+    // Write cmd
+    writeCmd(GET_PROTOCOL_VERSION, NULL, 0, & protocolVersion, 1);
 
     if (protocolVersion != PROTOCOL_VERSION) {
 
@@ -56,12 +49,10 @@ void SerialClient::checkProtocolVersion() {
 
 void SerialClient::readBatteryVoltage(float * batteryVoltage) {
 
-    // Send command
-    writeChar(GET_BATTERY_VOLTAGE);
-
-    // Read response
     unsigned short response;
-    readShort(& response);
+
+    // Write cmd
+    writeCmd(GET_BATTERY_VOLTAGE, NULL, 0, & response, 2);
 
     // Get battery voltage
     * batteryVoltage = (float) response / 1000;
@@ -70,222 +61,116 @@ void SerialClient::readBatteryVoltage(float * batteryVoltage) {
 
 void SerialClient::saveSetupToEEPROM() {
 
-    // Send command
-    writeChar(SAVE_TO_EEPROM);
+    // Write cmd
+    writeCmd(SAVE_TO_EEPROM, NULL, 0, NULL, 0);
 
 }
 
 void SerialClient::uploadSetup(Setup * setup) {
 
-    // Send command
-    writeChar(UPLOAD);
-
-    // Read setup
-    writeShort(setup->pid_proportional);
-    writeShort(setup->pid_integrative);
-    writeShort(setup->pid_derivative);
-    writeShort(setup->motors_max_speed);
-    writeShort(setup->ir_in_line_threshold);
-    writeShort(setup->ir_noise_threshold);
-    writeShort(setup->telemetry_enabled);
+    // Write cmd
+    writeCmd(UPLOAD, setup, sizeof(Setup), NULL, 0);
 
 }
 
 void SerialClient::downloadSetup(Setup * setup) {
 
-    // Send command
-    writeChar(DOWNLOAD);
-
-    // Read setup
-    readShort(& setup->pid_proportional);
-    readShort(& setup->pid_integrative);
-    readShort(& setup->pid_derivative);
-    readShort(& setup->motors_max_speed);
-    readShort(& setup->ir_in_line_threshold);
-    readShort(& setup->ir_noise_threshold);
-    readShort(& setup->telemetry_enabled);
+    // Write cmd
+    writeCmd(DOWNLOAD, NULL, 0, setup, sizeof(Setup));
 
 }
 
 void SerialClient::downloadTelemetry(TelemetryData * data) {
 
-    // Send command
-    writeChar(DOWNLOAD_TELEMETRY);
-
-    for (unsigned int index = 0; index < TELEMETRY_BUFFER_SIZE; index++) {
-
-        // Read data
-        readInt(& data[index].time);
-        readShort(& data[index].error);
-
-    }
+    // Write cmd
+    writeCmd(DOWNLOAD_TELEMETRY, NULL, 0, data, sizeof(TelemetryData) * TELEMETRY_BUFFER_SIZE);
 
 }
 
-void SerialClient::readChar(unsigned char * data) {
+void SerialClient::writeCmd(const unsigned char cmd, const void * request, size_t requestSize, void * response, size_t responseSize) {
 
-    // Wait for data available
-    bool available = serial.waitReadable();
+    // Write command
+    writeData(& cmd, 1);
 
-    if (available) {
+    if (requestSize > 0) {
 
-        // Read data
-        size_t count = serial.read(data, 1);
-
-        if (count != 1) {
-
-            // Throw exception
-            throw ReadUnexpectedByteCount();
-
-        }
-
-    } else {
-
-        // Throw exception
-        throw SerialTimeout();
+        // Write request
+        writeData(request, requestSize);
 
     }
 
-}
+    if (responseSize > 0) {
 
-void SerialClient::readShort(unsigned short * data) {
-
-    // Wait for data available
-    bool available = serial.waitReadable();
-
-    if (available) {
-
-        uint8_t buffer[2];
-
-        // Read data
-        size_t count = serial.read(buffer, 2);
-
-        if (count != 2) {
-
-            // Throw exception
-            throw ReadUnexpectedByteCount();
-
-        } else {
-
-            // Copy buffer into data
-            * data = buffer[0];
-            * data <<= 8;
-            * data += buffer[1];
-
-        }
-
-    } else {
-
-        // Throw exception
-        throw SerialTimeout();
+        // Read response
+        readData(response, responseSize);
 
     }
 
-}
-
-void SerialClient::readShort(short * data) {
-
-    // Wait for data available
-    bool available = serial.waitReadable();
-
-    if (available) {
-
-        uint8_t buffer[2];
-
-        // Read data
-        size_t count = serial.read(buffer, 2);
-
-        if (count != 2) {
-
-            // Throw exception
-            throw ReadUnexpectedByteCount();
-
-        } else {
-
-            // Copy buffer into data
-            * data = buffer[0];
-            * data <<= 8;
-            * data += buffer[1];
-
-        }
-
-    } else {
-
-        // Throw exception
-        throw SerialTimeout();
-
-    }
+    // Check EOS
+    checkEOS();
 
 }
 
-void SerialClient::readInt(unsigned int * data) {
+void SerialClient::writeData(const void * data, size_t size) {
 
-    // Wait for data available
-    bool available = serial.waitReadable();
-
-    if (available) {
-
-        uint8_t buffer[4];
-
-        // Read data
-        size_t count = serial.read(buffer, 4);
-
-        if (count != 4) {
-
-            // Throw exception
-            throw ReadUnexpectedByteCount();
-
-        } else {
-
-            // Copy buffer into data
-            * data = buffer[0];
-            * data <<= 8;
-            * data += buffer[1];
-            * data <<= 8;
-            * data += buffer[2];
-            * data <<= 8;
-            * data += buffer[3];
-
-        }
-
-    } else {
-
-        // Throw exception
-        throw SerialTimeout();
-
-    }
-
-}
-
-void SerialClient::writeChar(const unsigned char data) {
-
-    // Write data
-    size_t count = serial.write(& data, 1);
-
-    if (count != 1) {
-
-        // Throw exception
-        throw WriteUnexpectedByteCount();
-
-    }
-
-}
-
-void SerialClient::writeShort(const unsigned short data) {
-
-    uint8_t buffer[2];
+    // Allocate a byte array for buffer
+    uint8_t buffer[size];
 
     // Copy data into buffer
-    buffer[0] = data >> 8;
-    buffer[1] = data;
+    std::memcpy(buffer, data, size);
 
     // Write data
-    size_t count = serial.write(buffer, 2);
+    size_t count = serial.write(buffer, size);
 
-    if (count != 2) {
+    if (count != size) {
 
         // Throw exception
         throw WriteUnexpectedByteCount();
+
+    }
+
+}
+
+void SerialClient::readData(void * data, size_t size) {
+
+    // Wait for data available
+    bool available = serial.waitReadable();
+
+    if (available) {
+
+        // Allocate a byte array for buffer
+        uint8_t buffer[size];
+
+        // Read data
+        size_t count = serial.read(buffer, size);
+
+        if (count == size) {
+
+            // Copy buffer into data
+            std::memcpy(data, buffer, size);
+
+        } else {
+
+            // Throw exception
+            throw ReadUnexpectedByteCount();
+
+        }
+
+    } else {
+
+        // Throw exception
+        throw SerialTimeout();
+
+    }
+
+}
+
+void SerialClient::checkEOS() {
+
+    if (serial.available() > 0) {
+
+        // Throw exception
+        throw ReadUnexpectedByteCount();
 
     }
 
