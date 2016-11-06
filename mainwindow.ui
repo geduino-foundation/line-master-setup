@@ -202,7 +202,7 @@
        <item>
         <widget class="QSpinBox" name="motors_max_speed_spin">
          <property name="maximum">
-          <number>128</number>
+          <number>255</number>
          </property>
         </widget>
        </item>
