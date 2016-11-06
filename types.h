@@ -1,19 +1,26 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef _TYPES_H_
+#define _TYPES_H_
+
+#ifndef ARDUINO
+
+// Needed for types if is not Arduino
+#include <stdint.h>
+
+#endif
 
 struct __attribute__((packed)) Setup {
-    unsigned short pid_proportional;
-    unsigned short pid_integrative;
-    unsigned short pid_derivative;
-    unsigned short motors_max_speed;
-    unsigned short ir_in_line_threshold;
-    unsigned short ir_noise_threshold;
-    unsigned short telemetry_enabled;
+    uint16_t pid_proportional;
+    uint16_t pid_integrative;
+    uint16_t pid_derivative;
+    uint16_t motors_max_speed;
+    uint16_t ir_in_line_threshold;
+    uint16_t ir_noise_threshold;
+    uint16_t telemetry_enabled;
 };
 
 struct __attribute__((packed)) TelemetryData {
-    unsigned int time;
-    short error;
+    uint32_t time;
+    int16_t error;
 };
 
-#endif // TYPES_H
+#endif

@@ -237,7 +237,7 @@ void MainWindow::dowloadTelemetry() {
         telemetryDialog->show();
 
         // Plot data
-        telemetryDialog->plot(data, TELEMETRY_BUFFER_SIZE);
+        telemetryDialog->plot(data, TELEMETRY_BUFFER_SIZE, setup);
 
         // Log
         log("Done");

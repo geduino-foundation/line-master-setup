@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "types.h"
+#include "pid.h"
 
 namespace Ui {
     class TelemetryDialog;
@@ -19,7 +20,7 @@ public:
 
     ~TelemetryDialog();
 
-    void plot(TelemetryData * data, unsigned short count);
+    void plot(TelemetryData * data, unsigned short count, Setup & setup);
 
 private:
 

@@ -14,42 +14,59 @@ TelemetryDialog::~TelemetryDialog() {
 
 }
 
-void TelemetryDialog::plot(TelemetryData * data, unsigned short count) {
+void TelemetryDialog::plot(TelemetryData * data, unsigned short count, Setup & setup) {
 
-    // Add graph
+    // Add graph for error
     ui->telemetry_plot->addGraph();
+    ui->telemetry_plot->graph(0)->setPen(QPen(Qt::red));
+    ui->telemetry_plot->graph(0)->setName("Error");
 
-    // Set pen
-    ui->telemetry_plot->graph(0)->setPen(QPen(Qt::blue));
+    // Add graph for correction
+    ui->telemetry_plot->addGraph(ui->telemetry_plot->xAxis, ui->telemetry_plot->yAxis2);
+    ui->telemetry_plot->graph(1)->setPen(QPen(Qt::blue));
+    ui->telemetry_plot->graph(1)->setName("Correction");
 
     // Setup second axis
     ui->telemetry_plot->xAxis2->setVisible(true);
     ui->telemetry_plot->xAxis2->setTickLabels(false);
     ui->telemetry_plot->yAxis2->setVisible(true);
-    ui->telemetry_plot->yAxis2->setTickLabels(false);
+    ui->telemetry_plot->yAxis2->setTickLabels(true);
 
-    // Connect two axes
-    connect(ui->telemetry_plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->telemetry_plot->xAxis2, SLOT(setRange(QCPRange)));
-    connect(ui->telemetry_plot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->telemetry_plot->yAxis2, SLOT(setRange(QCPRange)));
+    // Connect x axes
+    connect(ui->telemetry_plot->xAxis, SIGNAL(rangeChanged1(QCPRange)), ui->telemetry_plot->xAxis2, SLOT(setRange(QCPRange)));
 
-    QVector<double> x(count), y(count);
+    // Show legend
+    ui->telemetry_plot->legend->setVisible(true);
+
+    QVector<double> time(count), error(count), correction(count);
+
+    // Create and setup PID for simulation
+    PID pid;
+    pid.setup(setup);
 
     // Prepare data
     for (unsigned short index = 0; index < count; index++) {
 
-        // Set x and y
-        x[index] = (double) (data[index].time - data[0].time);
-        y[index] = (double) data[index].error;
+        // Simulate correction
+        short simulated_correction;
+        pid.update(data[index].error, & simulated_correction);
+
+        // Set time, error and correction
+        time[index] = (double) (data[index].time - data[0].time);
+        error[index] = (double) data[index].error;
+        correction[index] = (double) simulated_correction;
 
     }
 
     // Set data
-    ui->telemetry_plot->graph(0)->setData(x, y);
+    ui->telemetry_plot->graph(0)->setData(time, error);
+    ui->telemetry_plot->graph(1)->setData(time, correction);
 
     // Rescale axes
     ui->telemetry_plot->graph(0)->rescaleAxes();
+    ui->telemetry_plot->graph(1)->rescaleAxes(true);
 
     // Set interaction
-    ui->telemetry_plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    ui->telemetry_plot->setInteractions(QCP::iRangeDrag);
 
 }

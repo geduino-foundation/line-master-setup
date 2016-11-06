@@ -17,13 +17,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     serialclient.cpp \
     qcustomplot.cpp \
-    telemetrydialog.cpp
+    telemetrydialog.cpp \
+    pid.cpp
 
 HEADERS  += mainwindow.h \
     serialclient.h \
     qcustomplot.h \
     telemetrydialog.h \
-    types.h
+    types.h \
+    pid.h
 
 FORMS    += mainwindow.ui \
     telemetrydialog.ui
