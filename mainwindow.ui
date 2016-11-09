@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>340</width>
-    <height>611</height>
+    <width>341</width>
+    <height>675</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,7 +32,7 @@
       <x>10</x>
       <y>10</y>
       <width>321</width>
-      <height>591</height>
+      <height>657</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -118,6 +118,23 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QLabel" name="pid_max_proportinal_label">
+           <property name="text">
+            <string>Max</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="pid_max_proportinal_spin">
+           <property name="maximum">
+            <number>255</number>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -136,6 +153,23 @@
           <widget class="QSpinBox" name="pid_integrative_spin">
            <property name="maximum">
             <number>65535</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="pid_max_integrative_label">
+           <property name="text">
+            <string>Max</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="pid_max_integrative_spin">
+           <property name="maximum">
+            <number>255</number>
            </property>
           </widget>
          </item>
@@ -160,7 +194,55 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QLabel" name="pid_max_derivative_label">
+           <property name="text">
+            <string>Max</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="pid_max_derivative_spin">
+           <property name="maximum">
+            <number>255</number>
+           </property>
+          </widget>
+         </item>
         </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QLabel" name="pid_max_correction_label">
+         <property name="text">
+          <string>Max correction</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="pid_max_correction_spin">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

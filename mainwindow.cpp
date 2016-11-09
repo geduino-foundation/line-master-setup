@@ -33,6 +33,10 @@ void MainWindow::update() {
     ui->pid_proportional_spin->setValue(setup.pid_proportional);
     ui->pid_integrative_spin->setValue(setup.pid_integrative);
     ui->pid_derivative_spin->setValue(setup.pid_derivative);
+    ui->pid_max_proportinal_spin->setValue(setup.pid_max_proportional);
+    ui->pid_max_integrative_spin->setValue(setup.pid_max_integrative);
+    ui->pid_max_derivative_spin->setValue(setup.pid_max_derivative);
+    ui->pid_max_correction_spin->setValue(setup.pid_max_correction);
     ui->motors_max_speed_spin->setValue(setup.motors_max_speed);
     ui->ir_in_line_threshold_spin->setValue(setup.ir_in_line_threshold);
     ui->ir_noise_threshold_spin->setValue(setup.ir_noise_threshold);
@@ -262,6 +266,10 @@ void MainWindow::loadFile() {
     setup.pid_proportional = settingsSetup.value(PID_PROPORTIONAL_KEY, 0).toInt();
     setup.pid_integrative = settingsSetup.value(PID_INTEGRATIVE_KEY, 0).toInt();
     setup.pid_derivative = settingsSetup.value(PID_DERIVATIVE_KEY, 0).toInt();
+    setup.pid_max_proportional = settingsSetup.value(PID_MAX_PROPORTIONAL_KEY, 0).toInt();
+    setup.pid_max_integrative = settingsSetup.value(PID_MAX_INTEGRATIVE_KEY, 0).toInt();
+    setup.pid_max_derivative = settingsSetup.value(PID_MAX_DERIVATIVE_KEY, 0).toInt();
+    setup.pid_max_correction = settingsSetup.value(PID_MAX_CORRECTION_KEY, 0).toInt();
     setup.motors_max_speed = settingsSetup.value(MOTORS_MAX_SPEED_KEY, 0).toInt();
     setup.ir_noise_threshold = settingsSetup.value(IR_NOISE_THRESHOLD_KEY, 0).toInt();
     setup.ir_in_line_threshold = settingsSetup.value(IR_IN_LINE_THRESHOLD_KEY, 0).toInt();
@@ -285,6 +293,10 @@ void MainWindow::saveFile() {
     settingsSetup.setValue(PID_PROPORTIONAL_KEY, setup.pid_proportional);
     settingsSetup.setValue(PID_INTEGRATIVE_KEY, setup.pid_integrative);
     settingsSetup.setValue(PID_DERIVATIVE_KEY, setup.pid_derivative);
+    settingsSetup.setValue(PID_MAX_PROPORTIONAL_KEY, setup.pid_max_proportional);
+    settingsSetup.setValue(PID_MAX_INTEGRATIVE_KEY, setup.pid_max_integrative);
+    settingsSetup.setValue(PID_MAX_DERIVATIVE_KEY, setup.pid_max_derivative);
+    settingsSetup.setValue(PID_MAX_CORRECTION_KEY, setup.pid_max_correction);
     settingsSetup.setValue(MOTORS_MAX_SPEED_KEY, setup.motors_max_speed);
     settingsSetup.setValue(IR_NOISE_THRESHOLD_KEY, setup.ir_noise_threshold);
     settingsSetup.setValue(IR_IN_LINE_THRESHOLD_KEY, setup.ir_in_line_threshold);
@@ -322,6 +334,35 @@ void MainWindow::on_pid_derivative_spin_valueChanged(int value) {
     setup.pid_derivative = value;
 
 }
+
+void MainWindow::on_pid_max_proportinal_spin_valueChanged(int value) {
+
+    // Set value
+    setup.pid_max_proportional = value;
+
+}
+
+void MainWindow::on_pid_max_integrative_spin_valueChanged(int value) {
+
+    // Set value
+    setup.pid_max_integrative = value;
+
+}
+
+void MainWindow::on_pid_max_derivative_spin_valueChanged(int value) {
+
+    // Set value
+    setup.pid_max_derivative = value;
+
+}
+
+void MainWindow::on_pid_max_correction_spin_valueChanged(int value) {
+
+    // Set value
+    setup.pid_max_correction = value;
+
+}
+
 
 void MainWindow::on_motors_max_speed_spin_valueChanged(int value) {
 
