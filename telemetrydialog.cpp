@@ -14,7 +14,7 @@ TelemetryDialog::~TelemetryDialog() {
 
 }
 
-void TelemetryDialog::plot(TelemetryData * data, unsigned short count, Setup & setup) {
+void TelemetryDialog::plot(TelemetryData * data, unsigned short count, Setup setup) {
 
     // Add graph for error
     ui->telemetry_plot->addGraph();
@@ -33,7 +33,8 @@ void TelemetryDialog::plot(TelemetryData * data, unsigned short count, Setup & s
     ui->telemetry_plot->yAxis2->setTickLabels(true);
 
     // Connect x axes
-    connect(ui->telemetry_plot->xAxis, SIGNAL(rangeChanged1(QCPRange)), ui->telemetry_plot->xAxis2, SLOT(setRange(QCPRange)));
+    connect(ui->telemetry_plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->telemetry_plot->xAxis2, SLOT(setRange(QCPRange)));
+    connect(ui->telemetry_plot->yAxis, SIGNAL(rangeChanged(QCPRange, QCPRange)), this, SLOT(on_primary_axis_range_changed(QCPRange, QCPRange)));
 
     // Show legend
     ui->telemetry_plot->legend->setVisible(true);
@@ -67,6 +68,23 @@ void TelemetryDialog::plot(TelemetryData * data, unsigned short count, Setup & s
     ui->telemetry_plot->graph(1)->rescaleAxes(true);
 
     // Set interaction
-    ui->telemetry_plot->setInteractions(QCP::iRangeDrag);
+    ui->telemetry_plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+}
+
+void TelemetryDialog::on_primary_axis_range_changed(QCPRange newRange, QCPRange oldRange) {
+
+    // Get y axis 2 range
+    QCPRange range = ui->telemetry_plot->yAxis2->range();
+
+    double upper, lower;
+
+    // Calculate new upper and lower for second y axis
+    upper = range.upper / oldRange.upper * newRange.upper;
+    lower = range.lower / oldRange.lower * newRange.lower;
+
+    // Set new range in y axis
+    QCPRange newRange(upper, lower);
+    ui->telemetry_plot->yAxis2->setRange(newRange);
 
 }

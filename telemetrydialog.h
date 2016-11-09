@@ -3,6 +3,7 @@
 
 #include <QDialog>
 
+#include "qcustomplot.h"
 #include "types.h"
 #include "pid.h"
 
@@ -20,7 +21,11 @@ public:
 
     ~TelemetryDialog();
 
-    void plot(TelemetryData * data, unsigned short count, Setup & setup);
+    void plot(TelemetryData * data, unsigned short count, Setup setup);
+
+private slots:
+
+    void on_primary_axis_range_changed(QCPRange newRange, QCPRange oldRange);
 
 private:
 
