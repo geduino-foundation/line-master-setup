@@ -1,4 +1,4 @@
-# line-master-setup
+# Line Master Setup tool
 The Geduino LineMaster setup tool
 
 This is the graphics setup tool for Geduino LineMaster developed using QT framework.
